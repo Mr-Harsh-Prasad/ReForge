@@ -1,8 +1,17 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import type { NextRequest } from "next/server";
 
-export default auth((req) => {
-  const isLoggedIn = !!req.auth;
+export function middleware(req: NextRequest) {
+  const isProd = process.env.NODE_ENV === "production";
+  
+  // NextAuth v4 / early v5
+  const legacyCookie = isProd ? "__Secure-next-auth.session-token" : "next-auth.session-token";
+  // NextAuth v5 beta
+  const authjsCookie = isProd ? "__Secure-authjs.session-token" : "authjs.session-token";
+
+  const token = req.cookies.get(authjsCookie) || req.cookies.get(legacyCookie);
+  const isLoggedIn = !!token;
+
   const pathname = req.nextUrl.pathname;
 
   const protectedRoutes = ["/dashboard", "/missions", "/goals", "/analytics", "/achievements", "/settings"];
@@ -20,7 +29,7 @@ export default auth((req) => {
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
