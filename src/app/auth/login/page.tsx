@@ -26,19 +26,22 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginInput) => {
     setError(null);
-    const result = await signIn("credentials", {
-      email: data.email,
-      password: data.password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
 
-    if (result?.error) {
-      setError("Invalid email or password. Please try again.");
-      return;
+      if (result?.error) {
+        setError("Invalid email or password. Please try again.");
+        return;
+      }
+
+      window.location.href = "/dashboard";
+    } catch {
+      setError("An unexpected error occurred. Please try again.");
     }
-
-    router.push("/dashboard");
-    router.refresh();
   };
 
   const handleGoogleSignIn = () => {
