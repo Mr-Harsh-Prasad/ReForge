@@ -5,9 +5,10 @@ import ws from "ws";
 
 neonConfig.webSocketConstructor = ws;
 
-const connectionString = process.env.DATABASE_URL!;
+const DEFAULT_DATABASE_URL = "postgresql://neondb_owner:npg_O6Tsh9PcEkuy@ep-holy-glade-aztoy3v2-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
 
 function createPrismaClient() {
+  const connectionString = process.env.DATABASE_URL || DEFAULT_DATABASE_URL;
   const pool = new Pool({ connectionString });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const adapter = new PrismaNeon(pool as any);
