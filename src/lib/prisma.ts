@@ -15,11 +15,9 @@ function createPrismaClient() {
     ? rawUrl.trim()
     : DEFAULT_DATABASE_URL;
 
-  console.log("[Prisma] Connecting to DB host ending in:", connectionString.slice(-35));
+  console.log("[Prisma] Initializing PrismaNeon adapter...");
 
-  const pool = new Pool({ connectionString });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const adapter = new PrismaNeon(pool as any);
+  const adapter = new PrismaNeon({ connectionString });
   return new PrismaClient({
     adapter,
     log: ["error", "warn"],
